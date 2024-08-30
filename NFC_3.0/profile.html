@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Profile</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /*body {
+          font-family: Arial, sans-serif;
+          background-color: #f4f4f4;
+          margin: 0;
+          padding: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+        }*/
+  
+        .profile-container {
+          background-color: #fff;
+          padding: 20px;
+          border-radius: 10px;
+          box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+          max-width: 400px;
+          width: 100%;
+          align-items: center;
+          text-align: center;
+          align-content: center;
+          margin-left: 35%;
+          margin-top: 5%;
+        }
+  
+        .profile-container h2 {
+          margin-bottom: 20px;
+          font-size: 24px;
+          color: #333;
+        }
+  
+        .profile-details {
+          text-align: left;
+          margin-bottom: 20px;
+        }
+  
+        .profile-details p {
+          margin: 10px 0;
+          font-size: 18px;
+          color: #555;
+        }
+  
+        .profile-details p span {
+          font-weight: bold;
+          color: #333;
+        }
+  
+        .attendance,
+        .assignments {
+          font-size: 20px;
+          margin-top: 15px;
+        }
+  
+        .attendance span,
+        .assignments span {
+          font-weight: bold;
+          color: #007bff;
+        }
+  
+        .progress-bar {
+          margin-top: 10px;
+          width: 100%;
+          background-color: #e0e0e0;
+          border-radius: 5px;
+          overflow: hidden;
+        }
+  
+        .progress-bar-inner {
+          height: 20px;
+          background-color: #007bff;
+          width: 0;
+          border-radius: 5px;
+          transition: width 0.5s;
+        }
+        a {
+          text-decoration: none;
+          color: black;
+        }
+        img{
+            height: 150px;
+            width: auto;
+        }
+        header{
+            height: 150px;
+        }
+      </style>
+  </head>
+  <body>
+    <header>
+      <img src="images/header.png">
+  </header>
+
+    <nav>
+        
+        <ul>
+            <li><a href="homepage-student.html">Home</a></li>
+            <li><a href="#">Timetable</a></li>
+            <li><a href="attendance-student.html">Attendance</a></li>
+            <li><a href="assignment-student.html">Assignment</a></li>
+            <li><a href="plagiarism.html">Plagiarism Checker</a></li>
+            <li><a href="profile.html">Profile</a></li>
+            <li><a href="logout.html">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="profile-container">
+      <h2>Student Profile</h2>
+      <div class="profile-details">
+        <p><span>Name:</span> Fareeha</p>
+        <p><span>College:</span> ABC University</p>
+        <p><span>Year:</span> 3rd Year</p>
+        <p><span>Course:</span> Bachelor of Science in Artificial Intelligence and Data Science</p>
+        <p><span>Current Semester:</span> 5th Semester</p>
+      </div>
+      <div class="attendance">
+        <a href="#">Attendance: <span id="attendance-percentage">0%</span></a>
+        <div class="progress-bar">
+          <div class="progress-bar-inner" id="attendance-bar"></div>
+        </div>
+      </div>
+      <div class="assignments">
+        <a href="#"
+          >Pending Assignments: <span id="pending-assignments">0</span></a
+        >
+      </div>
+    </div>
+
+    <script>
+      // Example Data
+      const attendancePercentage = 66.67; // Change this value to reflect real data
+      const pendingAssignments = 2; // Change this value to reflect real data
+
+      
+      // Set Attendance Percentage
+      document.getElementById("attendance-percentage").innerText =
+        attendancePercentage + "%";
+      document.getElementById("attendance-bar").style.width =
+        attendancePercentage + "%";
+
+      // Set Pending Assignments
+      document.getElementById("pending-assignments").innerText =
+        pendingAssignments;
+    </script>
+    <script src="attendance.js"></script>
+  </body>
+</html>

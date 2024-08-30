@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Assignment Dashboard</title>
+    <style>
+      body {
+        font-family: 'Roboto', sans-serif;
+        background: linear-gradient(45deg, #83a4d4, #b6fbff);
+        color: #333;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 40px auto;
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      h1, h2 {
+        text-align: center;
+        color: #000000;
+        margin-bottom: 20px;
+        font-weight: 600;
+        text-shadow: 1px 2px 2px rgba(0, 0, 0, 0.2);
+      }
+
+      .toggle-buttons {
+        display: flex;
+        justify-content: space-around;
+        background: #4a90e2;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        padding: 10px;
+      }
+
+      .toggle-buttons button {
+        background: transparent;
+        border: none;
+        color: #fff;
+        font-size: 1.2em;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      .toggle-buttons button.active {
+        background: #357ABD;
+        border-radius: 5px;
+        padding: 10px 20px;
+      }
+
+      .assignment-list.hidden {
+        display: none;
+      }
+
+      .assignment-card {
+        background: #f5f5f5;
+        padding: 20px;
+        margin: 10px 0;
+        border-radius: 5px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      input[type="file"] {
+        margin-top: 10px;
+        display: block;
+      }
+
+      button {
+        padding: 10px 20px;
+        border: none;
+        background: #4a90e2;
+        color: white;
+        font-size: 1.1em;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s;
+        margin-top: 10px;
+      }
+
+      button:hover {
+        background: #357ABD;
+      }
+
+      .trophy {
+        position: absolute;
+        font-size: 50px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+      }
+
+      .assignment-count {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 1.2em;
+        color: #333;
+      }
+
+      img{
+            height: 150px;
+            width: auto;
+        }
+        header{
+            height: 150px;
+        }
+    </style>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <header>
+      <img src="images/header.png">
+    </header>
+    <nav>
+      <ul>
+        <li><a href="homepage-student.html">Home</a></li>
+        <li><a href="timetable-student.html">Timetable</a></li>
+        <li><a href="attendance-student.html">Attendance</a></li>
+        <li><a href="assignment-student.html">Assignment</a></li>
+        <li><a href="plagiarism.html">Plagiarism Checker</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="logout.html">Logout</a></li>
+      </ul>
+    </nav>
+    <div class="container">
+      <h1>Student Assignment Dashboard</h1>
+      <center>
+        <div class="toggle-buttons">
+          <button id="pendingBtn" class="toggle-btn active" onclick="toggleView('pending')">Pending Assignments</button>
+          <button id="submittedBtn" class="toggle-btn" onclick="toggleView('submitted')">Submitted Assignments</button>
+        </div>
+      </center>
+
+      <div class="assignment-count" id="pendingCount">Pending Assignments: 0</div>
+
+      <div id="pendingAssignments" class="assignment-list"></div>
+      <div id="submittedAssignments" class="assignment-list hidden"></div>
+
+      <!-- Trophy Icon -->
+      <div id="trophy" class="trophy">🏆</div>
+
+      <script>
+        let assignments = JSON.parse(localStorage.getItem("assignments")) || [];
+
+        function createAssignmentCard(assignment) {
+          const card = document.createElement("div");
+          card.className = "assignment-card";
+          card.innerHTML = `
+            <h3>${assignment.title}</h3>
+            <p>${assignment.details}</p>
+            <p>Due Date: ${assignment.deadline}</p>
+            ${
+              assignment.status === "pending"
+                ? `<input type="file" id="file-${assignment.id}" accept="application/pdf">
+                   <button class="submit-btn" onclick="submitAssignment(${assignment.id})">Submit</button>`
+                : `<button class="view-btn" onclick="viewSubmission(${assignment.id})">View Submission</button>`
+            }
+          `;
+          return card;
+        }
+
+        function renderAssignments() {
+          const pendingContainer = document.getElementById("pendingAssignments");
+          const submittedContainer = document.getElementById("submittedAssignments");
+          const pendingCount = document.getElementById("pendingCount");
+
+          pendingContainer.innerHTML = "";
+          submittedContainer.innerHTML = "";
+
+          let pendingCountValue = 0;
+
+          assignments.forEach((assignment) => {
+            if (assignment.status === "pending") {
+              pendingContainer.appendChild(createAssignmentCard(assignment));
+              pendingCountValue++;
+            } else {
+              submittedContainer.appendChild(createAssignmentCard(assignment));
+            }
+          });
+
+          pendingCount.textContent = `Pending Assignments: ${pendingCountValue}`;
+        }
+
+        function submitAssignment(id) {
+          const assignment = assignments.find((a) => a.id === id);
+          const fileInput = document.getElementById(`file-${id}`);
+
+          if (assignment && fileInput.files.length > 0) {
+            assignment.status = "submitted";
+            assignment.file = URL.createObjectURL(fileInput.files[0]);
+            localStorage.setItem("assignments", JSON.stringify(assignments));
+            renderAssignments();
+
+            // Show Trophy
+            const trophy = document.getElementById('trophy');
+            trophy.style.opacity = '1';
+            setTimeout(() => {
+              trophy.style.opacity = '0';
+            }, 2000);
+
+          } else {
+            alert("Please select a file to submit.");
+          }
+        }
+
+        function viewSubmission(id) {
+          const assignment = assignments.find((a) => a.id === id);
+          if (assignment && assignment.file) {
+            window.open(assignment.file, '_blank');
+          } else {
+            alert("No submission found.");
+          }
+        }
+
+        function toggleView(view) {
+          const pendingContainer = document.getElementById("pendingAssignments");
+          const submittedContainer = document.getElementById("submittedAssignments");
+
+          if (view === "pending") {
+            pendingContainer.classList.remove("hidden");
+            submittedContainer.classList.add("hidden");
+            document.getElementById("pendingBtn").classList.add("active");
+            document.getElementById("submittedBtn").classList.remove("active");
+          } else if (view === "submitted") {
+            pendingContainer.classList.add("hidden");
+            submittedContainer.classList.remove("hidden");
+            document.getElementById("pendingBtn").classList.remove("active");
+            document.getElementById("submittedBtn").classList.add("active");
+          }
+        }
+
+        renderAssignments();
+      </script>
+    </div>
+  </body>
+</html>

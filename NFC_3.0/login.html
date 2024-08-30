@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRACKADEMIC</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        img{
+            height: 150px;
+            width: auto;
+        }
+        header{
+            height: 150px;
+        }
+  </style>
+</head>
+<body>
+    <header>
+        <img src="images/header.png">
+    </header>
+    
+    <nav>
+        
+        <ul>
+            <li><a href="homepage-student.html">Home</a></li>
+            <li><a href="#">Timetable</a></li>
+            <li><a href="attendance-student.html">Attendance</a></li>
+            <li><a href="assignment-student.html">Assignment</a></li>
+            <li><a href="plagiarism.html">Plagiarism Checker</a></li>
+            <li><a href="profile.html">Profile</a></li>
+            <li><a href="logout.html">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div id="login-form">
+        <h2>Login</h2>
+        <p>Enter any non-empty values for ID and Password</p>
+        <input type="text" id="student-id" placeholder="ID">
+        <br>
+        <input type="password" id="password" placeholder="Password">
+        <br>
+        <button onclick="login()">Login</button>
+    </div>
+
+    <script src="login.js"></script>
+</body>
+</html>

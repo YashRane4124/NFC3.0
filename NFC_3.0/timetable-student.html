@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Schedule</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+      /* General Styling */
+      body {
+        font-family: "Roboto", sans-serif;
+        background: linear-gradient(45deg, #83a4d4, #b6fbff);
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* Container for content */
+      .container {
+        max-width: 900px;
+        margin: 40px auto;
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      
+      h2 {
+        text-align: center;
+        color: #4a90e2;
+        margin-bottom: 20px;
+        font-size: 2em;
+        text-shadow: 1px 2px 2px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Navigation Bar */
+      nav {
+        background-color: #4a90e2;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      nav .logo h2 {
+        color: #fff;
+        margin: 0;
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        gap: 20px;
+      }
+
+      nav ul li a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 16px;
+        padding: 10px 15px;
+        border-radius: 5px;
+        transition: background 0.3s;
+      }
+
+      nav ul li a:hover {
+        background-color: #357abd;
+      }
+
+      /* Table Styling */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      th,
+      td {
+        padding: 12px;
+        text-align: center;
+        border: 1px solid #ddd;
+        font-size: 1em;
+        color: #333;
+      }
+
+      th {
+        background-color: #4a90e2;
+        color: #fff;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+
+      tr:hover {
+        background-color: rgba(74, 144, 226, 0.2);
+        transition: background-color 0.3s ease;
+      }
+
+      /* Button Styling */
+      button {
+        margin: 20px 0;
+        padding: 12px 25px;
+        background-color: #4a90e2;
+        color: #fff;
+        font-size: 1em;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.2s;
+      }
+
+      button:hover {
+        background-color: #357abd;
+        transform: translateY(-2px);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      /* Responsive Table */
+      @media (max-width: 768px) {
+        table {
+          font-size: 0.9em;
+        }
+
+        th,
+        td {
+          padding: 10px;
+        }
+
+        h1,
+        h2 {
+          font-size: 1.5em;
+        }
+
+        .container {
+          padding: 20px;
+        }
+      }
+      img{
+            height: 150px;
+            width: auto;
+        }
+      header{
+            height: 150px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <img src="images/header.png">
+    </header>
+    <nav>
+      
+      <ul>
+        <li><a href="homepage-student.html">Home</a></li>
+        <li><a href="timetable-student.html">Timetable</a></li>
+        <li><a href="attendance-student.html">Attendance</a></li>
+        <li><a href="assignment-student.html">Assignment</a></li>
+        <li><a href="plagiarism.html">Plagiarism Checker</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="logout.html">Logout</a></li>
+      </ul>
+    </nav>
+    <div class="container">
+      <h1>Schedule</h1>
+      <h2>Timetable</h2>
+      <table id="timetable">
+        <thead>
+          <tr>
+            <th>Day</th>
+            <th>8 AM - 9 AM</th>
+            <th>9 AM - 10 AM</th>
+            <th>10 AM - 11 AM</th>
+            <th>11 AM - 12 PM</th>
+            <th>12 PM - 1 PM</th>
+            <th>1 PM - 2 PM</th>
+            <th>2 PM - 3 PM</th>
+            <th>3 PM - 4 PM</th>
+            <th>4 PM - 5 PM</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Rows will be added dynamically here -->
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+      function renderTable() {
+        const schedule =
+          JSON.parse(localStorage.getItem("professorSchedule")) || {};
+        const timetableBody = document.querySelector("#timetable tbody");
+        timetableBody.innerHTML = "";
+
+        const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+        const hours = [
+          "8 AM",
+          "9 AM",
+          "10 AM",
+          "11 AM",
+          "12 PM",
+          "1 PM",
+          "2 PM",
+          "3 PM",
+          "4 PM",
+          "5 PM",
+        ];
+
+        days.forEach((day) => {
+          const row = document.createElement("tr");
+
+          const dayCell = document.createElement("td");
+          dayCell.textContent = day;
+          row.appendChild(dayCell);
+
+          let lastSubject = null;
+          let colspan = 0;
+
+          hours.forEach((hour) => {
+            const subject = schedule[hour] ? schedule[hour][day] : "";
+
+            if (subject === lastSubject) {
+              colspan++;
+              row.lastChild.colSpan = colspan;
+            } else {
+              if (colspan > 1) {
+                row.lastChild.colSpan = colspan;
+              }
+
+              const cell = document.createElement("td");
+              cell.textContent = subject;
+              row.appendChild(cell);
+
+              lastSubject = subject;
+              colspan = 1;
+            }
+          });
+
+          // Final adjustment for the last cell
+          if (colspan > 1) {
+            row.lastChild.colSpan = colspan;
+          }
+
+          timetableBody.appendChild(row);
+        });
+      }
+
+      // Initial render
+      renderTable();
+    </script>
+  </body>
+</html>

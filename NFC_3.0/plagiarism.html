@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Plagiarism Checker</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(45deg, #83a4d4, #b6fbff);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            position: relative;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #000000;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-shadow: 1px 2px 2px rgba(0, 0, 0, 0.2);
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: #4a90e2;
+            color: white;
+            font-size: 1.1em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #357ABD;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .highlight {
+            background-color: yellow;
+            padding: 0 5px;
+            border-radius: 3px;
+        }
+        img{
+            height: 150px;
+            width: auto;
+        }
+        header{
+            height: 150px;
+        }
+    </style>
+    <link rel="stylesheet" href="style.css"></link>
+</head>
+<body>
+    <header>
+        <img src="images/header.png">
+      </header>
+      <nav>
+        <ul>
+          <li><a href="homepage-student.html">Home</a></li>
+          <li><a href="timetable-student.html">Timetable</a></li>
+          <li><a href="attendance-student.html">Attendance</a></li>
+          <li><a href="assignment-student.html">Assignment</a></li>
+          <li><a href="plagiarism.html">Plagiarism Checker</a></li>
+          <li><a href="profile.html">Profile</a></li>
+          <li><a href="logout.html">Logout</a></li>
+          
+        </ul>
+      </nav>
+    <div class="container">
+        <h1>Simple Plagiarism Checker</h1>
+        <textarea id="text1" placeholder="Enter the reference text here..."></textarea>
+        <textarea id="text2" placeholder="Enter the text to check for plagiarism..."></textarea>
+        <button onclick="checkPlagiarism()">Check for Plagiarism</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function checkPlagiarism() {
+            const text1 = document.getElementById('text1').value.toLowerCase();
+            const text2 = document.getElementById('text2').value.toLowerCase();
+            const words1 = text1.split(/\s+/);
+            const words2 = text2.split(/\s+/);
+            const result = document.getElementById('result');
+            
+            let plagiarizedWords = 0;
+            let highlightedText = '';
+            
+            for (let i = 0; i < words2.length; i++) {
+                let matchFound = false;
+                for (let j = 0; j < words1.length - 2; j++) {
+                    if (words2[i] === words1[j] && 
+                        words2[i + 1] === words1[j + 1] && 
+                        words2[i + 2] === words1[j + 2]) {
+                        highlightedText += `<span class="highlight">${words2[i]} ${words2[i + 1]} ${words2[i + 2]}</span> `;
+                        plagiarizedWords += 3;
+                        i += 2;
+                        matchFound = true;
+                        break;
+                    }
+                }
+                if (!matchFound) {
+                    highlightedText += words2[i] + ' ';
+                }
+            }
+            
+            const plagiarismPercentage = (plagiarizedWords / words2.length) * 100;
+            
+            result.innerHTML = `
+                <p>Plagiarism detected: ${plagiarismPercentage.toFixed(2)}%</p>
+                <p>Highlighted text:</p>
+                <p>${highlightedText}</p>
+            `;
+        }
+    </script>
+</body>
+</html>

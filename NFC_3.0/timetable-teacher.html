@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Professor Schedule</title>
+    
+    <style>
+      /* General Styling */
+      body {
+        font-family: "Roboto", sans-serif;
+        background: linear-gradient(45deg, #83a4d4, #b6fbff);
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+
+      header {
+        background-color: #fafafa;
+        color: #333;
+        padding: 20px 0;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        
+    
+    }
+
+      /* Container for content */
+      .container {
+        max-width: 900px;
+        margin: 40px auto;
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      
+      h2 {
+        text-align: center;
+        color: #4a90e2;
+        margin-bottom: 20px;
+        font-size: 2em;
+        text-shadow: 1px 2px 2px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Navigation Bar */
+      nav {
+        background-color: #4a90e2;
+        /*padding: 15px 20px;*/
+        padding-top: 40px;;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        height: 40px;
+      }
+
+      nav .logo h2 {
+        color: #fff;
+        margin: 0;
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        gap: 20px;
+      }
+
+      nav ul li a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 16px;
+        padding: 10px 15px;
+        border-radius: 5px;
+        transition: background 0.3s;
+      }
+
+      nav ul li a:hover {
+        background-color: #357abd;
+      }
+
+      /* Form Styling */
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+      }
+
+      label {
+        margin-bottom: 5px;
+        color: #333;
+        font-weight: bold;
+      }
+
+      input,
+      select {
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        background-color: #f9f9f9;
+        transition: border 0.3s;
+      }
+
+      input:focus,
+      select:focus {
+        border-color: #4a90e2;
+      }
+
+      /* Button Styling */
+      .button-group {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+
+      button {
+        background-color: #4a90e2;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin: 0 10px;
+        transition: background-color 0.3s, transform 0.2s;
+      }
+
+      button:hover {
+        background-color: #357abd;
+        transform: translateY(-2px);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      button[style*="background-color: #f44336"] {
+        background-color: #f44336;
+      }
+
+      button[style*="background-color: #2196f3"] {
+        background-color: #2196f3;
+      }
+
+      /* Table Styling */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      th,
+      td {
+        padding: 12px;
+        text-align: center;
+        border: 1px solid #ddd;
+        font-size: 1em;
+        color: #333;
+      }
+
+      th {
+        background-color: #4a90e2;
+        color: #fff;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+
+      tr:hover {
+        background-color: rgba(74, 144, 226, 0.2);
+        transition: background-color 0.3s ease;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        table {
+          font-size: 0.9em;
+        }
+
+        th,
+        td {
+          padding: 10px;
+        }
+
+        h1,
+        h2 {
+          font-size: 1.5em;
+        }
+
+        .container {
+          padding: 20px;
+        }
+
+        .button-group {
+          flex-direction: column;
+          gap: 10px;
+        }
+      }
+      img{
+            height: 150px;
+            width: auto;
+        }
+      header{
+            height: 150px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <img src="images/header.png">
+  </header>
+    <nav>
+      
+      <ul>
+        <li><a href="homepage-teacher.html">Home</a></li>
+        <li><a href="timetable-teacher.html">Timetable</a></li>
+        <li><a href="attendance-teacher.html">Attendance</a></li>
+        <li><a href="assignment-teacher.html">Assignment</a></li>
+        <li><a href="logout.html">Logout</a></li>
+      </ul>
+    </nav>
+
+    <div class="container">
+      <h1>Professor Schedule</h1>
+      <form id="scheduleForm">
+        <div class="form-group">
+          <label for="hour">Hour</label>
+          <select id="hour">
+            <option value="8 AM">8 AM-9 AM</option>
+            <option value="9 AM">9 AM-10 AM</option>
+            <option value="10 AM">10 AM-11 AM</option>
+            <option value="11 AM">11 AM-12 PM</option>
+            <option value="12 PM">12 PM-1 PM</option>
+            <option value="1 PM">1 PM-2 PM</option>
+            <option value="2 PM">2 PM-3 PM</option>
+            <option value="3 PM">3 PM-4 PM</option>
+            <option value="4 PM">4 PM-5 PM</option>
+            <option value="5 PM">5 PM-6 PM</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="day">Day</label>
+          <select id="day">
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="subject">Subject</label>
+          <input type="text" id="subject" placeholder="Enter subject" />
+        </div>
+        <div class="button-group">
+          <button type="button" onclick="addSchedule()">Add to Schedule</button>
+          <button
+            type="button"
+            onclick="clearSchedule()"
+            style="background-color: #f44336"
+          >
+            Clear Schedule
+          </button>
+          <button type="button" onclick="exportSchedule()">
+            Export Schedule
+          </button>
+          
+        </div>
+      </form>
+
+      <h2>Scheduled Timetable</h2>
+      <table id="timetable">
+        <thead>
+          <tr>
+            <th>Hour</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Rows will be added dynamically here -->
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+      let schedule =
+        JSON.parse(localStorage.getItem("professorSchedule")) || {};
+
+      function addSchedule() {
+        const hour = document.getElementById("hour").value;
+        const day = document.getElementById("day").value;
+        const subject = document.getElementById("subject").value;
+
+        if (!schedule[hour]) {
+          schedule[hour] = {};
+        }
+
+        schedule[hour][day] = subject;
+
+        // Save to localStorage
+        localStorage.setItem("professorSchedule", JSON.stringify(schedule));
+
+        renderTable();
+      }
+
+      function clearSchedule() {
+        // Clear the schedule object and localStorage
+        schedule = {};
+        localStorage.removeItem("professorSchedule");
+
+        // Re-render the table to show an empty schedule
+        renderTable();
+      }
+
+      function renderTable() {
+        const timetableBody = document.querySelector("#timetable tbody");
+        timetableBody.innerHTML = "";
+
+        const hours = [
+          "8 AM",
+          "9 AM",
+          "10 AM",
+          "11 AM",
+          "12 PM",
+          "1 PM",
+          "2 PM",
+          "3 PM",
+          "4 PM",
+          "5 PM",
+        ];
+        const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
+        hours.forEach((hour) => {
+          const row = document.createElement("tr");
+
+          const hourCell = document.createElement("td");
+          hourCell.textContent = hour;
+          row.appendChild(hourCell);
+
+          days.forEach((day) => {
+            const cell = document.createElement("td");
+            cell.textContent = schedule[hour] ? schedule[hour][day] || "" : "";
+            row.appendChild(cell);
+          });
+
+          timetableBody.appendChild(row);
+        });
+      }
+
+      function exportSchedule() {
+        let csvContent = "data:text/csv;charset=utf-8,";
+        const hours = [
+          "8 AM",
+          "9 AM",
+          "10 AM",
+          "11 AM",
+          "12 PM",
+          "1 PM",
+          "2 PM",
+          "3 PM",
+          "4 PM",
+          "5 PM",
+        ];
+        const days = [
+          "Hour",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+        ];
+
+        // Add header row
+        csvContent += days.join(",") + "\n";
+
+        // Add each hour's schedule
+        hours.forEach((hour) => {
+          let row = [hour];
+          row = row.concat(
+            days
+              .slice(1)
+              .map((day) => (schedule[hour] ? schedule[hour][day] || "" : ""))
+          );
+          csvContent += row.join(",") + "\n";
+        });
+
+        // Create a downloadable link
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "professor_schedule.csv");
+
+        // Append the link to the document and click it to trigger download
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      function viewSchedule() {
+        // Redirect to the schedule display page
+        window.location.href = "display_schedule.html";
+      }
+
+      // Initial render to show saved schedule
+      renderTable();
+    </script>
+  </body>
+</html>

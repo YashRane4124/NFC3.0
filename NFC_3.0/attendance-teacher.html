@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Advanced Attendance System</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        background: linear-gradient(45deg, #83a4d4, #b6fbff);
+        color: #333;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        text-align: center;
+      }
+      h1 {
+        margin-top: 30px;
+        font-size: 2.5em;
+        color: #000000;
+        text-shadow: 1px 2px 2px rgba(0, 0, 0, 0.2);
+      }
+      .container {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 30px;
+        border-radius: 10px;
+        width: 80%;
+        margin: 20px auto;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      }
+      .tab {
+        display: flex;
+        justify-content: space-around;
+        background: #4a90e2;
+        border-radius: 10px;
+        margin-bottom: 20px;
+      }
+      .tab button {
+        background: transparent;
+        border: none;
+        padding: 15px;
+        color: #fff;
+        font-size: 1.2em;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      .tab button:hover {
+        background: #357abd;
+      }
+      .tab button.active {
+        background: #357abd;
+      }
+      .tabcontent {
+        display: none;
+      }
+      .form-group input,
+      .form-group select {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-right: 10px;
+        font-size: 1.1em;
+      }
+      button {
+        padding: 10px 20px;
+        border: none;
+        background: #4a90e2;
+        color: white;
+        font-size: 1.1em;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      button:hover {
+        background: #357abd;
+      }
+      #reportOutput table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      #reportOutput table,
+      #reportOutput th,
+      #reportOutput td {
+        border: 1px solid #ccc;
+      }
+      #reportOutput th,
+      #reportOutput td {
+        padding: 10px;
+      }
+      #studentList li {
+        background: #eee;
+        padding: 15px;
+        margin: 5px 0;
+        border-radius: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      #studentList li.present {
+        background: #d4edda;
+      }
+      #studentList li.absent {
+        background: #f8d7da;
+      }
+      /* Animations */
+      .fade {
+        animation: fadeEffect 1s;
+      }
+      @keyframes fadeEffect {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      img{
+            height: 150px;
+            width: auto;
+        }
+        header{
+            height: 150px;
+        }
+    </style>
+  </head>
+  <body>
+    <header>
+      <img src="images/header.png">
+  </header>
+  
+  <nav>
+      
+      <ul>
+          <li><a href="homepage-student.html">Home</a></li>
+          <li><a href="#">Timetable</a></li>
+          <li><a href="attendance-student.html">Attendance</a></li>
+          <li><a href="assignment-student.html">Assignment</a></li>
+          <li><a href="plagiarism.html">Assignment</a></li>
+          <li><a href="profile.html">Profile</a></li>
+          <li><a href="logout.html">Logout</a></li>
+      </ul>
+  </nav>
+    <div class="container">
+      <h1>Advanced Attendance System</h1>
+
+      <div class="tab">
+        <button
+          class="tablinks"
+          onclick="openTab(event, 'Attendance')"
+          id="defaultOpen"
+        >
+          Attendance
+        </button>
+        <button class="tablinks" onclick="openTab(event, 'Courses')">
+          Courses
+        </button>
+        <button class="tablinks" onclick="openTab(event, 'Divisions')">
+          Divisions
+        </button>
+        <button class="tablinks" onclick="openTab(event, 'Reports')">
+          Reports
+        </button>
+      </div>
+
+      <div id="Attendance" class="tabcontent">
+        <h2>Mark Attendance</h2>
+        <div class="form-group">
+          <select id="courseSelect"></select>
+          <select id="divisionSelect"></select>
+          <input type="date" id="attendanceDate" />
+          <button onclick="scheduleLecture()">Schedule Lecture</button>
+        </div>
+        <ul id="studentList"></ul>
+      </div>
+
+      <div id="Courses" class="tabcontent">
+        <h2>Manage Courses</h2>
+        <div class="form-group">
+          <input
+            type="text"
+            id="newCourseName"
+            placeholder="Enter course name"
+          />
+          <button onclick="addCourse()">Add Course</button>
+        </div>
+        <ul id="courseList"></ul>
+      </div>
+
+      <div id="Divisions" class="tabcontent">
+        <h2>Manage Divisions</h2>
+        <div class="form-group">
+          <input
+            type="text"
+            id="newDivisionName"
+            placeholder="Enter division name"
+          />
+          <button onclick="addDivision()">Add Division</button>
+        </div>
+        <ul id="divisionList"></ul>
+      </div>
+
+      <div id="Reports" class="tabcontent">
+        <h2>Attendance Reports</h2>
+        <div class="form-group">
+          <select id="reportCourseSelect"></select>
+          <select id="reportDivisionSelect"></select>
+          <button onclick="generateReport()">Generate Report</button>
+        </div>
+        <div id="reportOutput"></div>
+      </div>
+    </div>
+
+    <script>
+      let students = JSON.parse(localStorage.getItem("students")) || {};
+      let courses = JSON.parse(localStorage.getItem("courses")) || [];
+      let divisions = JSON.parse(localStorage.getItem("divisions")) || [];
+      let attendanceRecords =
+        JSON.parse(localStorage.getItem("attendanceRecords")) || {};
+
+      document.addEventListener("DOMContentLoaded", () => {
+        renderCourseList();
+        renderDivisionList();
+        updateCourseSelects();
+        updateDivisionSelects();
+      });
+
+      function saveData() {
+        localStorage.setItem("students", JSON.stringify(students));
+        localStorage.setItem("courses", JSON.stringify(courses));
+        localStorage.setItem("divisions", JSON.stringify(divisions));
+        localStorage.setItem(
+          "attendanceRecords",
+          JSON.stringify(attendanceRecords)
+        );
+      }
+
+      function renderStudentList() {
+        const courseId = document.getElementById("courseSelect").value;
+        const divisionId = document.getElementById("divisionSelect").value;
+        const date = document.getElementById("attendanceDate").value;
+        const studentList = document.getElementById("studentList");
+        studentList.innerHTML = "";
+
+        if (!courseId || !divisionId || !date) return;
+
+        students[divisionId].forEach((student) => {
+          const li = document.createElement("li");
+          li.textContent = student.name;
+
+          const status = getAttendanceStatus(courseId, date, student.id);
+          li.className = status;
+
+          const presentButton = document.createElement("button");
+          presentButton.textContent = "Present";
+          presentButton.onclick = () =>
+            markAttendance(courseId, divisionId, date, student.id, true);
+
+          const absentButton = document.createElement("button");
+          absentButton.textContent = "Absent";
+          absentButton.onclick = () =>
+            markAttendance(courseId, divisionId, date, student.id, false);
+
+          li.appendChild(presentButton);
+          li.appendChild(absentButton);
+          studentList.appendChild(li);
+        });
+      }
+
+      function addCourse() {
+        const newCourseName = document
+          .getElementById("newCourseName")
+          .value.trim();
+        if (newCourseName) {
+          const courseId = "course_" + Date.now();
+          courses.push({ id: courseId, name: newCourseName });
+          document.getElementById("newCourseName").value = "";
+          saveData();
+          renderCourseList();
+          updateCourseSelects();
+        }
+      }
+
+      function renderCourseList() {
+        const courseList = document.getElementById("courseList");
+        courseList.innerHTML = "";
+        courses.forEach((course) => {
+          const li = document.createElement("li");
+          li.textContent = course.name;
+          courseList.appendChild(li);
+        });
+      }
+
+      function addDivision() {
+        const newDivisionName = document
+          .getElementById("newDivisionName")
+          .value.trim();
+        if (newDivisionName) {
+          const divisionId = "division_" + Date.now();
+          divisions.push({ id: divisionId, name: newDivisionName });
+          students[divisionId] = [];
+          document.getElementById("newDivisionName").value = "";
+          saveData();
+          renderDivisionList();
+          updateDivisionSelects();
+        }
+      }
+
+      function renderDivisionList() {
+        const divisionList = document.getElementById("divisionList");
+        divisionList.innerHTML = "";
+        divisions.forEach((division) => {
+          const li = document.createElement("li");
+          li.textContent = division.name;
+
+          const addStudentInput = document.createElement("input");
+          addStudentInput.type = "text";
+          addStudentInput.placeholder = "Add student";
+
+          const addStudentButton = document.createElement("button");
+          addStudentButton.textContent = "Add";
+          addStudentButton.onclick = () =>
+            addStudentToDivision(division.id, addStudentInput.value);
+
+          li.appendChild(addStudentInput);
+          li.appendChild(addStudentButton);
+          divisionList.appendChild(li);
+        });
+      }
+
+      function addStudentToDivision(divisionId, studentName) {
+        if (studentName.trim()) {
+          const studentId = "student_" + Date.now();
+          students[divisionId].push({ id: studentId, name: studentName });
+          saveData();
+          renderDivisionList();
+        }
+      }
+
+      function updateCourseSelects() {
+        const courseSelects = document.querySelectorAll(
+          "#courseSelect, #reportCourseSelect"
+        );
+        courseSelects.forEach((select) => {
+          select.innerHTML = '<option value="">Select Course</option>';
+          courses.forEach((course) => {
+            const option = document.createElement("option");
+            option.value = course.id;
+            option.textContent = course.name;
+            select.appendChild(option);
+          });
+        });
+      }
+
+      function updateDivisionSelects() {
+        const divisionSelects = document.querySelectorAll(
+          "#divisionSelect, #reportDivisionSelect"
+        );
+        divisionSelects.forEach((select) => {
+          select.innerHTML = '<option value="">Select Division</option>';
+          divisions.forEach((division) => {
+            const option = document.createElement("option");
+            option.value = division.id;
+            option.textContent = division.name;
+            select.appendChild(option);
+          });
+        });
+      }
+
+      function scheduleLecture() {
+        const courseId = document.getElementById("courseSelect").value;
+        const divisionId = document.getElementById("divisionSelect").value;
+        const date = document.getElementById("attendanceDate").value;
+
+        if (courseId && divisionId && date) {
+          renderStudentList();
+        }
+      }
+
+      function markAttendance(
+        courseId,
+        divisionId,
+        date,
+        studentId,
+        isPresent
+      ) {
+        if (!attendanceRecords[courseId]) {
+          attendanceRecords[courseId] = {};
+        }
+        if (!attendanceRecords[courseId][date]) {
+          attendanceRecords[courseId][date] = {};
+        }
+        attendanceRecords[courseId][date][studentId] = isPresent
+          ? "present"
+          : "absent";
+        saveData();
+        renderStudentList();
+      }
+
+      function getAttendanceStatus(courseId, date, studentId) {
+        if (
+          attendanceRecords[courseId] &&
+          attendanceRecords[courseId][date] &&
+          attendanceRecords[courseId][date][studentId]
+        ) {
+          return attendanceRecords[courseId][date][studentId];
+        }
+        return "";
+      }
+
+      function calculateOverallAttendance(studentId) {
+        let totalClasses = 0;
+        let totalPresent = 0;
+
+        courses.forEach((course) => {
+          if (attendanceRecords[course.id]) {
+            const courseDates = Object.keys(attendanceRecords[course.id]);
+            totalClasses += courseDates.length;
+
+            courseDates.forEach((date) => {
+              if (attendanceRecords[course.id][date][studentId] === "present") {
+                totalPresent++;
+              }
+            });
+          }
+        });
+
+        return totalClasses > 0
+          ? ((totalPresent / totalClasses) * 100).toFixed(2) + "%"
+          : "N/A";
+      }
+
+      function generateReport() {
+        const courseId = document.getElementById("reportCourseSelect").value;
+        const divisionId = document.getElementById(
+          "reportDivisionSelect"
+        ).value;
+        const reportOutput = document.getElementById("reportOutput");
+        reportOutput.innerHTML = "";
+
+        if (!courseId || !divisionId) return;
+
+        const table = document.createElement("table");
+        const thead = document.createElement("thead");
+        const tbody = document.createElement("tbody");
+
+        const headerRow = document.createElement("tr");
+        [
+          "Student Name",
+          "Total Classes",
+          "Present",
+          "Absent",
+          "Attendance (%)",
+          "Overall Attendance (%)",
+        ].forEach((text) => {
+          const th = document.createElement("th");
+          th.textContent = text;
+          headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+
+        const studentsInDivision = students[divisionId];
+        let totalClasses = 0;
+
+        if (attendanceRecords[courseId]) {
+          totalClasses = Object.keys(attendanceRecords[courseId]).length;
+        }
+
+        studentsInDivision.forEach((student) => {
+          const row = document.createElement("tr");
+
+          const studentNameCell = document.createElement("td");
+          studentNameCell.textContent = student.name;
+          row.appendChild(studentNameCell);
+
+          const totalClassesCell = document.createElement("td");
+          totalClassesCell.textContent = totalClasses;
+          row.appendChild(totalClassesCell);
+
+          let presentCount = 0;
+
+          if (attendanceRecords[courseId]) {
+            for (let date in attendanceRecords[courseId]) {
+              if (attendanceRecords[courseId][date][student.id] === "present") {
+                presentCount++;
+              }
+            }
+          }
+
+          const presentCell = document.createElement("td");
+          presentCell.textContent = presentCount;
+          row.appendChild(presentCell);
+
+          const absentCell = document.createElement("td");
+          absentCell.textContent = totalClasses - presentCount;
+          row.appendChild(absentCell);
+
+          const attendancePercentage =
+            totalClasses > 0
+              ? ((presentCount / totalClasses) * 100).toFixed(2)
+              : "N/A";
+
+          const attendanceCell = document.createElement("td");
+          attendanceCell.textContent = attendancePercentage + "%";
+          row.appendChild(attendanceCell);
+
+          const overallAttendanceCell = document.createElement("td");
+          overallAttendanceCell.textContent = calculateOverallAttendance(
+            student.id
+          );
+          row.appendChild(overallAttendanceCell);
+
+          tbody.appendChild(row);
+        });
+
+        table.appendChild(thead);
+        table.appendChild(tbody);
+        reportOutput.appendChild(table);
+      }
+
+      function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+          tabcontent[i].style.display = "none";
+        }
+
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+          tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+      }
+
+      document.getElementById("defaultOpen").click();
+    </script>
+  </body>
+</html>

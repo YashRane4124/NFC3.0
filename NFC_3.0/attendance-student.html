@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Attendance Overview</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        background: linear-gradient(45deg, #83a4d4, #b6fbff);
+        color: #333;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        text-align: center;
+      }
+      h1 {
+        font-size: 2em;
+        color: #000;
+        margin-bottom: 20px;
+      }
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        height: 100vh;
+        margin: 0 auto;
+        max-width: 1200px;
+      }
+      .pie-chart {
+        width: 150px;
+        height: 150px;
+        margin: 10px;
+        display: inline-block;
+      }
+      .charts-container {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+      }
+      .charts-container canvas {
+        width: 100px !important;
+        height: 100px !important;
+      }
+      table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 8px;
+        border: 1px solid #ddd;
+        text-align: center;
+        font-size: 0.9em;
+      }
+      th {
+        background-color: #4a90e2;
+        color: white;
+      }
+      img{
+            height: 150px;
+            width: auto;
+        }
+        header{
+            height: 150px;
+        }
+    </style>
+  </head>
+  <body>
+    <header>
+      <img src="images/header.png">
+  </header>
+  
+  <nav>
+      
+      <ul>
+          <li><a href="homepage-student.html">Home</a></li>
+          <li><a href="#">Timetable</a></li>
+          <li><a href="attendance-student.html">Attendance</a></li>
+          <li><a href="assignment-student.html">Assignment</a></li>
+          <li><a href="plagiarism.html">Plagiarism Checker</a></li>
+          <li><a href="profile.html">Profile</a></li>
+          <li><a href="logout.html">Logout</a></li>
+      </ul>
+  </nav>
+    <div class="container">
+      <h1>Fareeha's Attendance Overview</h1>
+      <div class="charts-container">
+        <canvas id="dwmChart" class="pie-chart"></canvas>
+        <canvas id="cnChart" class="pie-chart"></canvas>
+        <canvas id="bceChart" class="pie-chart"></canvas>
+        <canvas id="aiChart" class="pie-chart"></canvas>
+        <canvas id="statsChart" class="pie-chart"></canvas>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th>Total Classes</th>
+            <th>Present</th>
+            <th>Absent</th>
+            <th>Attendance (%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>DWM</td>
+            <td>40</td>
+            <td>35</td>
+            <td>5</td>
+            <td>87.5%</td>
+          </tr>
+          <tr>
+            <td>CN</td>
+            <td>38</td>
+            <td>34</td>
+            <td>4</td>
+            <td>89.5%</td>
+          </tr>
+          <tr>
+            <td>BCE</td>
+            <td>42</td>
+            <td>39</td>
+            <td>3</td>
+            <td>92.9%</td>
+          </tr>
+          <tr>
+            <td>AI</td>
+            <td>36</td>
+            <td>32</td>
+            <td>4</td>
+            <td>88.9%</td>
+          </tr>
+          <tr>
+            <td>Stats</td>
+            <td>40</td>
+            <td>37</td>
+            <td>3</td>
+            <td>92.5%</td>
+          </tr>
+          <tr>
+            <th colspan="4">Overall Attendance</th>
+            <th>90.3%</th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      function createPieChart(id, data, label) {
+        const ctx = document.getElementById(id).getContext("2d");
+        new Chart(ctx, {
+          type: "pie",
+          data: {
+            labels: ["Present", "Absent"],
+            datasets: [
+              {
+                label: label,
+                data: data,
+                backgroundColor: ["#4CAF50", "#F44336"],
+                hoverOffset: 4,
+              },
+            ],
+          },
+          options: {
+            responsive: false,
+            plugins: {
+              legend: {
+                display: true,
+                position: "bottom",
+              },
+            },
+          },
+        });
+      }
+
+      createPieChart("dwmChart", [35, 5], "DWM");
+      createPieChart("cnChart", [34, 4], "CN");
+      createPieChart("bceChart", [39, 3], "BCE");
+      createPieChart("aiChart", [32, 4], "AI");
+      createPieChart("statsChart", [37, 3], "Stats");
+    </script>
+  </body>
+</html>

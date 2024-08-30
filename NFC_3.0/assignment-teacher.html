@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Professor Assignment Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+      
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(45deg, #83a4d4, #b6fbff);
+        color: #333;
+        margin: 0;
+        padding: 0;
+        
+      }
+      .container {
+        width: 40%;
+        margin-left: 230px;
+        padding-left: 230px;
+        margin: 40px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      h1,
+      h2 {
+        text-align: center;
+        color: #000; /* Black headings */
+        margin-bottom: 20px;
+      }
+      #assignmentForm,
+      #dashboard {
+        margin-bottom: 30px;
+      }
+      label {
+        display: block;
+        font-weight: bold;
+        color: #555;
+        margin-top: 10px;
+      }
+      input[type="text"],
+      input[type="datetime-local"],
+      textarea {
+        width: calc(100% - 10px);
+        padding: 8px;
+        margin-top: 5px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        box-sizing: border-box;
+      }
+      button {
+        background-color: #4a90e2; /* Blue accent color */
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 20px;
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        transition: background-color 0.3s;
+      }
+      button:hover {
+        background-color: #4183c4; /* Slightly darker blue on hover */
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+      }
+      th {
+        background-color: #4a90e2; /* Blue accent for table headers */
+        color: white;
+      }
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+      .past-deadline {
+        color: blueviolet;
+        font-weight: bold;
+      }
+      
+        img{
+            height: 150px;
+            width: auto;
+        }
+        header{
+            height: 150px;
+        }
+  
+    </style>
+  </head>
+  <body>
+    <header>
+      <img src="images/header.png">
+  </header>
+    <nav>
+        
+        <ul>
+            <li><a href="homepage-teacher.html">Home</a></li>
+            <li><a href="timetable-teacher.html">Timetable</a></li>
+            <li><a href="attendance-teacher.html">Attendance</a></li>
+            <li><a href="assignment-teacher.html">Assignment</a></li>
+            <li><a href="logout.html">Logout</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+      <h1>Professor Assignment Dashboard</h1>
+
+      <div id="assignmentForm">
+        <h2>Add New Assignment</h2>
+        <form id="newAssignmentForm">
+          <label for="title">Assignment Title:</label>
+          <input type="text" id="title" required />
+
+          <label for="details">Assignment Details:</label>
+          <textarea id="details" rows="4" required></textarea>
+
+          <label for="file">Upload Related Document:</label>
+          <input type="file" id="file" />
+
+          <label for="deadline">Deadline:</label>
+          <input type="datetime-local" id="deadline" required />
+
+          <button type="submit">Add Assignment</button>
+        </form>
+      </div>
+
+      <div id="dashboard">
+        <h2>Assignments Dashboard</h2>
+        <table id="assignmentsTable">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Details</th>
+              <th>Deadline</th>
+              <th>Submissions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Assignments will be added here dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      let assignments = JSON.parse(localStorage.getItem("assignments")) || [];
+
+      document
+        .getElementById("newAssignmentForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const title = document.getElementById("title").value;
+          const details = document.getElementById("details").value;
+          const file = document.getElementById("file").files[0];
+          const deadline = document.getElementById("deadline").value;
+
+          const newAssignment = {
+            id: Date.now(),
+            title,
+            details,
+            file: file ? file.name : "No file uploaded",
+            deadline,
+            submissions: 0,
+            status: "pending",
+          };
+
+          assignments.push(newAssignment);
+          localStorage.setItem("assignments", JSON.stringify(assignments));
+          updateDashboard();
+          this.reset();
+        });
+
+      function updateDashboard() {
+        const tableBody = document.querySelector("#assignmentsTable tbody");
+        tableBody.innerHTML = "";
+
+        assignments.forEach((assignment) => {
+          const row = tableBody.insertRow();
+          row.innerHTML = `
+            <td>${assignment.title}</td>
+            <td>${assignment.details}</td>
+            <td class="${
+              isPastDeadline(assignment.deadline) ? "past-deadline" : ""
+            }">${formatDate(assignment.deadline)}</td>
+            <td>${assignment.submissions}</td>
+          `;
+        });
+      }
+
+      function formatDate(dateString) {
+        const options = {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+      }
+
+      function isPastDeadline(deadline) {
+        return new Date(deadline) < new Date();
+      }
+
+      updateDashboard();
+
+      /*setInterval(() => {
+        if (assignments.length > 0) {
+          const randomIndex = Math.floor(Math.random() * assignments.length);
+          assignments[randomIndex].submissions++;
+          localStorage.setItem("assignments", JSON.stringify(assignments));
+          updateDashboard();
+        }
+      }, 5000);*/
+    </script>
+  </body>
+</html>
